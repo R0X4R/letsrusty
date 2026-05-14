@@ -1,6 +1,16 @@
 # varoon
 
-XSS parameter reflection scanner written in Rust. Inspired by the original [Python tool](https://github.com/R0X4R/varoon/), rewritten for speed.
+XSS parameter reflection scanner written in Rust. Inspired by the original Python tool, rewritten for speed.
+
+```
+  __    __     __  __     ______   ______   .______     ______   .__   __.
+ /\ \  /\ \   /\ \/\ \   /\  == \ /\  ___\ /\  __ \   /  __  \  |  \ |  |
+ \ \ \_\ \ \  \ \ \_\ \  \ \  __< \ \ \__  \\ \  __ \  \/__/\ \__|   \|  |
+  \ \____ \ \  \ \_____\  \ \_____\\ \_____\ \ \_\ \_\   \ \_\ \__|__|\__|
+   \/____/\ \  \/____/   \/_____/ \/_____/  \/_/\/_/    \/_/ \/___/\/__/
+          \ \
+           \__\
+```
 
 ## Features
 
@@ -13,13 +23,6 @@ XSS parameter reflection scanner written in Rust. Inspired by the original [Pyth
 * Configurable request and connection timeouts
 
 ## Installation
-### From crates.io
-
-```bash
-cargo install varoon
-```
-
-### From source (recommended)
 
 ```bash
 git clone https://github.com/R0X4R/letsrusty.git && cd letsrusty/varoon && cargo build --release
@@ -27,29 +30,28 @@ git clone https://github.com/R0X4R/letsrusty.git && cd letsrusty/varoon && cargo
 
 ## Usage
 
-+ **Basic usage**
+```bash
+# Basic usage
+cat urls.txt | varoon
 
-    ```bash
-    cat urls.txt | varoon
-    ```
+# Custom concurrency
+cat urls.txt | varoon -c 100
 
-+ **Custom concurrency**
+# With other tools
+subfinder -d target.com | httpx -silent | varoon
+```
 
-    ```bash
-    cat urls.txt | varoon -c 100
-    ```
+## Output Format
 
-+ **With other tools**
+```
+URL: https://example.com/search?q=test Param: [ q ] Unfiltered: [ " < > $ | ( ) ` : ; { } ]
+```
 
-    ```bash
-    subfinder -d target.com | httpx -silent | waybackurls | varoon
-    ```
+## Dangerous Characters Tested
 
-+ **Output Format**
-
-    ```bash
-    URL: https://example.com/search?q=test Param: [ q ] Unfiltered: [ "<>$|()`:;{} ]
-    ```
+```
+" < > $ | ( ) ` : ; { } [ ]
+```
 
 ## How It Works
 

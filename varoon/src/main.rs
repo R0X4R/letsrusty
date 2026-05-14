@@ -60,8 +60,6 @@ async fn main() -> Result<()> {
 
     let (tx, rx) = mpsc::channel(args.concurrency * 2);
 
-    let _num_workers = args.concurrency.min(num_cpus::get());
-
     let worker_client = Arc::clone(&client);
     let worker_semaphore = Arc::clone(&semaphore);
     let worker_completed = Arc::clone(&completed);
