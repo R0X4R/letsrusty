@@ -6,13 +6,12 @@ use std::time::Duration;
 use url::Url;
 
 const PREFIX: &str = "aprefix";
-const SUFFIX_TEST: &str = "asuffix";
-const TEST_SUFFIX: &str = "test1234";
+
 const MAX_RETRIES: u32 = 3;
 const RETRY_DELAY_MS: u64 = 1000;
 
-pub const DANGEROUS_CHARS: [char; 14] = [
-    '"', '<', '>', '$', '|', '(', ')', '`', ':', ';', '{', '}', '[', ']',
+pub const DANGEROUS_CHARS: [char; 15] = [
+    '"', ' ', '<', '>', '$', '|', '(', ')', '`', ':', ';', '{', '}', '[', ']',
 ];
 
 pub async fn check_reflection(
@@ -71,41 +70,6 @@ pub async fn check_reflection(
     Ok(reflected)
 }
 
-pub async fn check_suffix_reflected(
-    client: &Arc<VaroorClient>,
-    url: &str,
-    param: &str,
-) -> bool {
-    let parsed = match Url::parse(url) {
-        Ok(p) => p,
-        Err(_) => return false,
-    };
-
-    let original_values: Vec<String> = parsed
-        .query_pairs()
-        .into_owned()
-        .filter(|(k, _)| k == param)
-        .map(|(_, v)| v.to_string())
-        .collect();
-
-    if original_values.is_empty() {
-        return false;
-    }
-
-    for orig_val in original_values {
-        let modified_value = format!("{}{}", orig_val, TEST_SUFFIX);
-        let test_url = set_param_value(url, param, &modified_value);
-
-        if let Ok(reflected) = check_reflection(client, &test_url).await {
-            if reflected.contains_key(param) {
-                return true;
-            }
-        }
-    }
-
-    false
-}
-
 pub async fn check_unfiltered_chars(
     client: &Arc<VaroorClient>,
     url: &str,
@@ -114,7 +78,7 @@ pub async fn check_unfiltered_chars(
     let mut found = Vec::new();
 
     for char in DANGEROUS_CHARS {
-        let test_value = format!("{}test{}{}", PREFIX, char, SUFFIX_TEST);
+        let test_value = format!("{}{}", PREFIX, char);
 
         let parsed = match Url::parse(url) {
             Ok(p) => p,
@@ -136,9 +100,13 @@ pub async fn check_unfiltered_chars(
             let modified_value = format!("{}{}", orig_val, test_value);
             let test_url = set_param_value(url, param, &modified_value);
 
-            if check_suffix_reflected(client, &test_url, param).await {
-                found.push(char);
-                break;
+            if let Ok(response) = send_with_retry(client, &test_url).await {
+                let body = response.text().await.unwrap_or_default();
+
+                if body.contains(&modified_value) && body.contains(&char.to_string()) {
+                    found.push(char);
+                    break;
+                }
             }
         }
     }
