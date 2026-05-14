@@ -39,7 +39,7 @@ cargo install bhed
 ### From source (recommended)
 
 ```bash
-git clone https://github.com/R0X4R/bhed.git && cd bhed && cargo build --release
+git clone https://github.com/R0X4R/letsrusty.git && cd letsrusty/bhed && cargo build --release
 ```
 
 The binary will be at `target/release/bhed`. Add it to your PATH:
@@ -183,7 +183,7 @@ Contributions are welcome! If you find a bug or want a new feature, open an issu
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT License - see [LICENSE](../LICENSE) for details.
 
 ## Credits
 

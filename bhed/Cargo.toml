@@ -1,10 +1,10 @@
 [package]
 name = "bhed"
 version = "1.0.0"
-edition = "2024"
+edition = "2026"
 description = "High-performance duplicate line filter written in Rust, inspired by anew"
 license = "MIT"
-repository = "https://github.com/R0X4R/bhed"
+repository = "https://github.com/R0X4R/letsrusty/tree/main/bhed"
 authors = ["R0X4R"]
 exclude = [".gitignore"]
 
