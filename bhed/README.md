@@ -2,7 +2,6 @@
 
 **bhed** (short for "better head" or whatever helps you remember it) is a blazingly fast duplicate line filter written in Rust. Think of it as a faster, more ergonomic alternative to [anew](https://github.com/tomnomnom/anew) from the legendary [TomNomNom](https://github.com/tomnomnom).
 
-
 ## Why bhed?
 
 If you've ever found yourself doing this:
@@ -17,35 +16,19 @@ Stop. That's unnecessary and slow. `bhed` only appends lines that don't already 
 
 ## Features
 
-* **Deduplication** - appends only new lines, skips duplicates
-* **Case-insensitive matching** - `-i` flag for "TEST" == "test"
-* **Whitespace normalization** - `-n` flag trims before comparing
-* **Blank line skipping** - `-b` flag ignores empty lines
-* **Custom separators** - `--sep` for CSV files or custom delimiters
-* **Preview mode** - `-p` shows what *would* be added without writing
-* **Count mode** - `-c` prints only the number of new lines
-* **Silent mode** - `-s` suppresses stdout, useful for scripting
-* **Preserves order** - first occurrence wins, no sorting involved
+| Feature                   | Flag    | Description                                 |
+| ------------------------- | ------- | ------------------------------------------- |
+| Deduplication             | N/A     | Appends only new lines and skips duplicates |
+| Case-insensitive matching | `-i`    | Treats `TEST` and `test` as the same        |
+| Whitespace normalization  | `-n`    | Trims lines before comparing                |
+| Blank line skipping       | `-b`    | Ignores empty lines                         |
+| Custom separators         | `--sep` | Supports CSV files or custom delimiters     |
+| Preview mode              | `-p`    | Shows what would be added without writing   |
+| Count mode                | `-c`    | Prints only the number of new lines         |
+| Silent mode               | `-s`    | Suppresses stdout, useful for scripting     |
+| Preserves order           | N/A     | First occurrence wins, no sorting involved  |
 
 ## Installation
-
-### From source (recommended)
-
-```bash
-git clone https://github.com/R0X4R/bhed.git
-cd bhed
-cargo build --release
-```
-
-The binary will be at `target/release/bhed`. Add it to your PATH:
-
-```bash
-# Linux/Mac
-sudo cp target/release/bhed /usr/local/bin/
-
-# Windows (run as admin)
-copy target\release\bhed.exe C:\Windows\System32\
-```
 
 ### From crates.io
 
@@ -53,68 +36,116 @@ copy target\release\bhed.exe C:\Windows\System32\
 cargo install bhed
 ```
 
-## Quick Start
+### From source (recommended)
 
 ```bash
-# Append unique lines to a file
-cat new_urls.txt | bhed all_urls.txt
-
-# Preview what would be added (no file writes)
-cat new_urls.txt | bhed -p all_urls.txt
-
-# Case-insensitive matching
-cat words.txt | bhed -i dictionary.txt
-
-# Trim whitespace before comparing
-cat data.txt | bhed -n output.txt
-
-# Count how many new lines were added
-cat new.txt | bhed -c all.txt
-
-# Skip blank lines
-cat mixed.txt | bhed -b clean.txt
-
-# Custom line separator (for CSV, etc.)
-cat data.csv | bhed --sep "," output.csv
-
-# Silent mode (no stdout)
-cat data.txt | bhed -s results.txt
+git clone https://github.com/R0X4R/bhed.git && cd bhed && cargo build --release
 ```
+
+The binary will be at `target/release/bhed`. Add it to your PATH:
++ **Linux/Mac**
+
+    ```bash
+    sudo cp target/release/bhed /usr/local/bin/
+    ```
++ **Windows (run as admin)**
+
+    ```bash
+    copy target\release\bhed.exe C:\Windows\System32\
+    ```
+
+## Quick Start
+
++ **Append unique lines to a file**
+
+    ```bash
+    cat new_urls.txt | bhed all_urls.txt
+    ```
+
++ **Preview what would be added (no file writes)**
+
+    ```bash
+    cat new_urls.txt | bhed -p all_urls.txt
+    ```
+
++ **Case-insensitive matching**
+
+    ```bash
+    cat words.txt | bhed -i dictionary.txt
+    ```
++ **Trim whitespace before comparing**
+
+    ```bash
+    cat data.txt | bhed -n output.txt
+    ```
++ **Count how many new lines were added**
+
+    ```bash
+    cat new.txt | bhed -c all.txt
+    ```
++ **Skip blank lines**
+
+    ```bash
+    cat mixed.txt | bhed -b clean.txt
+    ```
++ **Custom line separator (for CSV, etc.)**
+
+    ```bash
+    cat data.csv | bhed --sep "," output.csv
+    ```
++ **Silent mode (no stdout)**
+
+    ```bash
+    cat data.txt | bhed -s results.txt
+    ```
 
 ## All Options
 
-| Flag | Description |
-|------|-------------|
-| `FILE` | Output file path (optional) |
-| `-s, --silent` | Suppress stdout output |
-| `-p, --preview` | Preview mode - don't write to file |
-| `-n, --normalize` | Trim leading/trailing whitespace before comparing |
-| `-i, --ignore-case` | Case-insensitive comparison |
-| `-c, --count` | Print only the count of new unique lines |
-| `-b, --skip-blanks` | Skip blank/empty lines |
-| `--sep <value>` | Custom line separator (default: `\n`) |
-| `-h, --help` | Show help |
+| Feature                     | Flag                | Description                                        |
+| --------------------------- | ------------------- | -------------------------------------------------- |
+| Output file path            | FILE                | Output file path (optional)                        |
+| Silent mode                 | `-s, --silent`      | Suppresses stdout output                           |
+| Preview mode                | `-p, --preview`     | Preview mode - don't write to file                 |
+| Whitespace normalization    | `-n, --normalize`   | Trims leading/trailing whitespace before comparing |
+| Case-insensitive comparison | `-i, --ignore-case` | Case-insensitive comparison                        |
+| Count mode                  | `-c, --count`       | Prints only the count of new unique lines          |
+| Blank line skipping         | `-b, --skip-blanks` | Skips blank/empty lines                            |
+| Custom separators           | `--sep <value>`     | Custom line separator (default: `\n`)              |
+| Help                        | `-h, --help`        | Shows help                                         |
 
 ## Real World Examples
 
 This tool is commonly used in bug bounty and security research workflows:
 
-```bash
-# Gather subdomains, keep only new ones
-subfinder -d target.com | bhed ~/recon/target/subdomains.txt
++ **Gather subdomains, keep only new ones**
 
-# Merge multiple wordlists without duplicates
-cat wordlist1.txt wordlist2.txt wordlist3.txt | bhed combined.txt
+    ```bash
+    subfinder -d target.com | bhed ~/recon/target/subdomains.txt
+    ```
+    
++ **Merge multiple wordlists without duplicates**
 
-# Track newly discovered endpoints
-cat new_endpoints.txt | bhed -n -i all_endpoints.txt
+    ```bash
+    cat wordlist1.txt wordlist2.txt wordlist3.txt | bhed combined.txt
+    ```
 
-# Extract unique IPs from scan results
-naabu -host target.com | bhed ips.txt
++ **Track newly discovered endpoints**
 
-# Build a target list over time
-echo "https://target.com" | bhed targets.txt
-```
+    ```bash
+    cat new_endpoints.txt | bhed -n -i all_endpoints.txt
+    ```
+
++ **Extract unique IPs from scan results**
+
+    ```bash
+    naabu -host target.com | bhed ips.txt
+    ```
+
++ **Build a target list over time**
+
+    ```bash
+    echo "https://target.com" | bhed targets.txt
+    ```
 
 ## How It Works
 
@@ -129,22 +160,22 @@ That's it. No sorting, no external dependencies, no magic.
 
 Built with Rust's performance-oriented ecosystem:
 
-* **ahash** - ultra-fast hashing (faster than SipHash or FxHash)
-* Single codegen unit + LTO for maximum optimization
-* Binary stripped of debug symbols
+- **ahash** - ultra-fast hashing (faster than SipHash or FxHash)
+- Single codegen unit + LTO for maximum optimization
+- Binary stripped of debug symbols
 
 The result is a binary that starts instantly and processes millions of lines per second.
 
 ## Comparison with anew
 
-| Feature | anew | bhed |
-|---------|------|------|
-| Deduplication | Yes | Yes |
-| Case-insensitive | No | Yes (`-i`) |
-| Whitespace normalize | No | Yes (`-n`) |
-| Skip blanks | No | Yes (`-b`) |
-| Custom separator | No | Yes (`--sep`) |
-| Binary size | ~2MB | ~200KB |
+| Feature              | anew | bhed          |
+| -------------------- | ---- | ------------- |
+| Deduplication        | Yes  | Yes           |
+| Case-insensitive     | No   | Yes (`-i`)    |
+| Whitespace normalize | No   | Yes (`-n`)    |
+| Skip blanks          | No   | Yes (`-b`)    |
+| Custom separator     | No   | Yes (`--sep`) |
+| Binary size          | ~2MB | ~200KB        |
 
 ## Contributing
 
