@@ -1,0 +1,20 @@
+[package]
+name = "bhed"
+version = "1.0.0"
+edition = "2024"
+description = "High-performance duplicate line filter written in Rust, inspired by anew"
+license = "MIT"
+repository = "https://github.com/R0X4R/bhed"
+authors = ["R0X4R"]
+exclude = [".gitignore"]
+
+[dependencies]
+clap = { version = "4.4", features = ["derive"] }
+ahash = "0.8"
+anyhow = "1.0"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"
