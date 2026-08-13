@@ -8,5 +8,5 @@ Feel free to look around, borrow code, or suggest improvements. Pull requests we
 
 | Tool | Description |
 |------|-------------|
-| [bhed](bhed/) | High-performance duplicate line filter written in Rust, inspired by anew |
+| [bhed](bhed/) | High-performance duplicate line filter written in Rust, inspired by anew | (Need to fix program panic)
 | [varoon](varoon/) | XSS parameter reflection scanner written in Rust |
